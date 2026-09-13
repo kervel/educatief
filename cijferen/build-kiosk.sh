@@ -395,7 +395,13 @@ build() {
       width: window.location.search.match(/print-pdf/gi)
         ? 1280
         : Math.max(1280, Math.round(720 * (window.innerWidth / window.innerHeight))),
-      height: 720,
+      // Idem voor de hoogte: op een portretscherm is 720 te laag, waardoor
+      // reveal niet naar de schermbreedte schaalt en de slide rechts en
+      // onder wegvalt. Laat het canvas dan meegroeien met het scherm: klein
+      // maar volledig zichtbaar is beter dan groot en afgesneden.
+      height: window.location.search.match(/print-pdf/gi)
+        ? 720
+        : Math.max(720, Math.round(1280 * (window.innerHeight / window.innerWidth))),
       margin: 0,
       // One page per slide: fragments are a presenting device, and a handout
       // with the same slide four times reads as a mistake.
