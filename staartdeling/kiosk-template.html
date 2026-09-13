@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="kiosk-theme.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section data-markdown data-separator="^\n---\n$" data-separator-vertical="^\n----\n$">
+        <textarea data-template>{{MARKDOWN_CONTENT}}</textarea>
+      </section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script src="plugin/notes/notes.js"></script>
+  <script>
+    Reveal.initialize({{REVEAL_CONFIG}}).then(() => {
+      // Wrap each slide's content in a centered 1280px container
+      // so absolutely positioned elements stay in the original layout
+      const slideWidth = Reveal.getConfig().width;
+      const offset = (slideWidth - 1280) / 2;
+      document.documentElement.style.setProperty('--content-offset', offset + 'px');
+
+      // Default slides position the H1 inside a red header bar via CSS, so
+      // their non-H1 content needs an absolutely-positioned wrapper to stay
+      // clear of the bar. Lead/section/fullscreen-* slides own their own
+      // layout (flex on the section, ::before pseudo-elements, etc.) so we
+      // leave their children alone.
+      const NEEDS_WRAPPER = (section) =>
+        !section.classList.contains('lead') &&
+        !section.classList.contains('section') &&
+        !section.classList.contains('fullscreen-light') &&
+        !section.classList.contains('fullscreen-dark');
+
+      document.querySelectorAll('.reveal .slides > section').forEach(section => {
+        if (!NEEDS_WRAPPER(section)) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'content-wrapper';
+        Array.from(section.childNodes).forEach(child => {
+          if (child.nodeName === 'H1') return; // H1 stays in the red header
+          wrapper.appendChild(child);
+        });
+        section.appendChild(wrapper);
+      });
+    });
+
+    const DEFAULT_AUTOSLIDE = {{DEFAULT_AUTOSLIDE}};
+    Reveal.on('slidechanged', event => {
+      const video = event.currentSlide.querySelector('video');
+      if (video) {
+        Reveal.configure({ autoSlide: 0 });
+        video.currentTime = 0;
+        video.play();
+        video.onended = () => {
+          Reveal.configure({ autoSlide: DEFAULT_AUTOSLIDE });
+          Reveal.next();
+        };
+      }
+      syncAilFrames(event.currentSlide);
+    });
+
+    // Animated agent-illustrator diagrams: each `.fragment.ail-trigger`
+    // owns one keyframe via data-ail-target / data-ail-frame. The frame
+    // shown on the SVG is determined by the *last* visible trigger.
+    function syncAilFrames(slide) {
+      if (!slide) return;
+      const targets = new Set();
+      slide.querySelectorAll('[data-ail-target]').forEach(t =>
+        targets.add(t.dataset.ailTarget));
+      targets.forEach(targetId => {
+        const triggers = [...slide.querySelectorAll(
+          `[data-ail-target="${targetId}"]`)];
+        const visible = triggers.filter(t => t.classList.contains('visible'));
+        const frame = visible.length
+          ? visible[visible.length - 1].dataset.ailFrame
+          : null;
+        const svg = slide.querySelector(`#${CSS.escape(targetId)}`);
+        if (!svg) return;
+        [...svg.classList].forEach(c => {
+          if (c.startsWith('frame-')) svg.classList.remove(c);
+        });
+        if (frame) svg.classList.add('frame-' + frame);
+      });
+    }
+
+    Reveal.on('fragmentshown', e => syncAilFrames(e.fragment.closest('section')));
+    Reveal.on('fragmenthidden', e => syncAilFrames(e.fragment.closest('section')));
+
+    // Mini-stroomschema onder een diagram: `.stepflow` draagt in
+    // data-step-per-fragment één stapnummer per fragment (0 = geen stap
+    // actief). De stap die bij het huidige fragment hoort, krijgt .active.
+    function syncStepFlow(slide) {
+      if (!slide) return;
+      slide.querySelectorAll('.stepflow').forEach(flow => {
+        const map = (flow.dataset.stepPerFragment || '')
+          .split(',').map(n => parseInt(n, 10));
+        const f = Reveal.getIndices().f;
+        const step = (f === undefined || f < 0) ? 0 : (map[f] || 0);
+        flow.querySelectorAll('[data-step]').forEach(li => {
+          li.classList.toggle('active', Number(li.dataset.step) === step);
+        });
+      });
+    }
+
+    Reveal.on('ready', e => syncStepFlow(e.currentSlide));
+    Reveal.on('slidechanged', e => syncStepFlow(e.currentSlide));
+    Reveal.on('fragmentshown', e => syncStepFlow(e.fragment.closest('section')));
+    Reveal.on('fragmenthidden', e => syncStepFlow(e.fragment.closest('section')));
+  </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+/* INTENT
+   Leer een leerling (10-12 jaar) stap voor stap hoe een staartdeling werkt,
+   in Vlaamse notatie (deeltal | deler, quotient onder de deler).
+   Voorbeeld: 4096 : 128 = 32
+   Na afloop moet de kijker de vier terugkerende stappen kennen:
+   hoeveel keer? - vermenigvuldig - trek af - haal volgend cijfer af.
+*/
+
+/* GLOBAL DESIGN
+   Metafoor: het klassieke schoolbord-schema. Cijfers in een strak raster,
+   een verticale streep die deeltal van deler scheidt, en onderaan een
+   uitlegregel die per frame meeloopt met de stap.
+*/
+
+/* LAYOUT PLAN
+   Kolomraster van 46px voor de cijfers van het deeltal (x = 100,146,192,238).
+   Verticale balk op x=275. Deler rechts (x = 310,356,402), streep eronder,
+   quotient daaronder. Aftrekkingen onder het deeltal, telkens met streep.
+   De uitleg per stap staat niet in het diagram maar naast de slide.
+*/
+
+/* STORYBOARD
+   0 "opgave"      : enkel de opstelling 4096 | 128
+   1 "hoeveel"     : markeer 409, vraag hoe vaak 128 erin past
+   2 "quotient3"   : schrijf 3 in het quotient, toon 3 x 128 = 384
+   3 "aftrekken1"  : schrijf -384 met streep
+   4 "rest25"      : rest 25
+   5 "afhalen"     : haal de 6 naar beneden -> 256
+   6 "quotient2"   : markeer 256, schrijf 2 in het quotient
+   7 "aftrekken2"  : schrijf -256 met streep
+   8 "rest0"       : rest 0, de deling gaat op
+   9 "resultaat"   : 4096 : 128 = 32
+
+   STORY ARC: van lege opstelling naar volledig uitgewerkte staartdeling,
+   waarbij elke stap exact een van de vier deelhandelingen toont.
+   PACING: frames 1, 5 en 8 verdienen extra tijd (de inzichtmomenten).
+*/
+
+/* ELEMENT CENSUS
+   PERSISTENT : canvas, d1..d4, bar, v1..v3, qline
+   TRANSIENT  : hl1, hl2, q1, q2, m1, s1_1..s1_3, l1, r1, r2, bd6,
+                m2, s2_1..s2_3, l2, z0
+   CONNECTIONS: d4.bottom -> bd6.top as pijl  (enkel vanaf frame "afhalen")
+*/
+
+group deling {
+    // onzichtbaar canvas: houdt de viewBox constant over alle frames
+    rect canvas [width: 470, height: 330, fill: white, stroke: none, opacity: 0.01]
+
+    // markeringen eerst -> renderen achter de cijfers
+    rect hl1 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+    rect hl2 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+    rect hlq [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+
+    // deeltal 4096
+    text "4" d1 [font_size: 40, fill: foreground-1]
+    text "0" d2 [font_size: 40, fill: foreground-1]
+    text "9" d3 [font_size: 40, fill: foreground-1]
+    text "6" d4 [font_size: 40, fill: foreground-1]
+
+    // verticale staart + deler + streep + quotient
+    rect bar [width: 3, height: 268, fill: foreground-1, stroke: none]
+    text "1" v1 [font_size: 40, fill: foreground-1]
+    text "2" v2 [font_size: 40, fill: foreground-1]
+    text "8" v3 [font_size: 40, fill: foreground-1]
+    rect qline [width: 152, height: 3, fill: foreground-1, stroke: none]
+    text "3" q1 [font_size: 40, fill: accent-dark]
+    text "2" q2 [font_size: 40, fill: accent-dark]
+
+    // eerste aftrekking: 409 - 384
+    text "−" m1 [font_size: 34, fill: secondary-dark]
+    text "3" s1_1 [font_size: 40, fill: secondary-dark]
+    text "8" s1_2 [font_size: 40, fill: secondary-dark]
+    text "4" s1_3 [font_size: 40, fill: secondary-dark]
+    rect l1 [width: 138, height: 3, fill: foreground-1, stroke: none]
+
+    // rest 25, daarna de 6 erbij -> 256
+    text "2" r1 [font_size: 40, fill: foreground-1]
+    text "5" r2 [font_size: 40, fill: foreground-1]
+    text "6" bd6 [font_size: 40, fill: accent-dark]
+
+    // tweede aftrekking: 256 - 256
+    text "−" m2 [font_size: 34, fill: secondary-dark]
+    text "2" s2_1 [font_size: 40, fill: secondary-dark]
+    text "5" s2_2 [font_size: 40, fill: secondary-dark]
+    text "6" s2_3 [font_size: 40, fill: secondary-dark]
+    rect l2 [width: 138, height: 3, fill: foreground-1, stroke: none]
+    text "0" z0 [font_size: 40, fill: foreground-1]
+
+}
+
+// === LAYOUT ===
+constrain canvas.center_x = 232
+constrain canvas.center_y = 167
+
+// deeltal
+constrain d1.center_x = 100
+constrain d1.center_y = 60
+constrain d2.center_x = 146
+constrain d2.center_y = d1.center_y
+constrain d3.center_x = 192
+constrain d3.center_y = d1.center_y
+constrain d4.center_x = 238
+constrain d4.center_y = d1.center_y
+
+// staart
+constrain bar.center_x = 275
+constrain bar.center_y = 167
+
+// deler
+constrain v1.center_x = 310
+constrain v1.center_y = d1.center_y
+constrain v2.center_x = 356
+constrain v2.center_y = d1.center_y
+constrain v3.center_x = 402
+constrain v3.center_y = d1.center_y
+constrain qline.center_x = 353
+constrain qline.center_y = 90
+
+// quotiënt
+constrain q1.center_x = v1.center_x
+constrain q1.center_y = 132
+constrain q2.center_x = v2.center_x
+constrain q2.center_y = q1.center_y
+
+// eerste aftrekking
+constrain m1.center_x = 54
+constrain m1.center_y = s1_1.center_y
+constrain s1_1.center_x = d1.center_x
+constrain s1_1.center_y = 118
+constrain s1_2.center_x = d2.center_x
+constrain s1_2.center_y = s1_1.center_y
+constrain s1_3.center_x = d3.center_x
+constrain s1_3.center_y = s1_1.center_y
+constrain l1.center_x = d2.center_x
+constrain l1.center_y = 140
+
+// rest + afgehaald cijfer
+constrain r1.center_x = d2.center_x
+constrain r1.center_y = 180
+constrain r2.center_x = d3.center_x
+constrain r2.center_y = r1.center_y
+constrain bd6.center_x = d4.center_x
+constrain bd6.center_y = r1.center_y
+
+// tweede aftrekking
+constrain m2.center_x = d1.center_x
+constrain m2.center_y = s2_1.center_y
+constrain s2_1.center_x = d2.center_x
+constrain s2_1.center_y = 228
+constrain s2_2.center_x = d3.center_x
+constrain s2_2.center_y = s2_1.center_y
+constrain s2_3.center_x = d4.center_x
+constrain s2_3.center_y = s2_1.center_y
+constrain l2.center_x = d3.center_x
+constrain l2.center_y = 255
+constrain z0.center_x = d4.center_x
+constrain z0.center_y = 285
+
+// markeringen
+constrain hl1 contains d1, d2, d3 [padding: 8]
+constrain hl2 contains r1, r2, bd6 [padding: 8]
+constrain hlq contains q1, q2 [padding: 8]
+
+// === CONNECTIES ===
+d4.bottom -> bd6.top as pijl [stroke: accent-dark, stroke_width: 2.5, routing: direct]
+
+// === KEYFRAMES ===
+keyframe "opgave" {
+    hide hl1, hl2, hlq, q1, q2
+    hide m1, s1_1, s1_2, s1_3, l1
+    hide r1, r2, bd6, pijl
+    hide m2, s2_1, s2_2, s2_3, l2, z0
+}
+
+keyframe "hoeveel" {
+    show hl1
+}
+
+keyframe "quotient3" {
+    show q1
+}
+
+keyframe "aftrekken1" {
+    hide hl1
+    show m1, s1_1, s1_2, s1_3, l1
+}
+
+keyframe "rest25" {
+    show r1, r2
+}
+
+keyframe "afhalen" {
+    show pijl, bd6
+}
+
+keyframe "quotient2" {
+    hide pijl
+    show hl2, q2
+}
+
+keyframe "aftrekken2" {
+    hide hl2
+    show m2, s2_1, s2_2, s2_3, l2
+}
+
+keyframe "rest0" {
+    show z0
+}
+
+keyframe "resultaat" {
+    show hlq
+}
