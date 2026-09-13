@@ -1,0 +1,105 @@
+/* INTENT
+   Cijferend optellen: 2748 + 1394 = 4142, kolom per kolom van rechts naar
+   links, met de onthoudcijfers zichtbaar zodat duidelijk is waar ze vandaan
+   komen en waar ze bij opgeteld worden.
+*/
+
+/* LAYOUT PLAN
+   Eén grid als uitlijnraster: kolom 4 zijn de eenheden, kolom 1 de
+   duizendtallen, kolom 0 draagt het plusteken. De gap tussen de rijen
+   draagt de streep. De onthoudcijfers staan klein boven de kolom waar ze
+   bij opgeteld worden.
+*/
+
+/* STORYBOARD
+   0 "opgave"        : de twee getallen en de streep
+   1 "eenheden"      : markeer de eenhedenkolom
+   2 "e_schrijf"     : 8 + 4 = 12 -> schrijf 2, onthoud 1
+   3 "tientallen"    : markeer de tientallenkolom
+   4 "t_schrijf"     : 4 + 9 = 13, +1 = 14 -> schrijf 4, onthoud 1
+   5 "honderdtallen" : markeer de honderdtallenkolom
+   6 "h_schrijf"     : 7 + 3 = 10, +1 = 11 -> schrijf 1, onthoud 1
+   7 "duizendtallen" : markeer de duizendtallenkolom
+   8 "d_schrijf"     : 2 + 1 = 3, +1 = 4 -> schrijf 4
+   9 "resultaat"     : antwoord omkaderd
+*/
+
+// markeringen eerst declareren: dan belanden ze achter de cijfers
+rect kol4 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect kol3 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect kol2 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect kol1 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect hlsom [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+
+grid som [cols: 5, rows: 3, gap: 12, cell_width: 38, cell_height: 44] {
+    // 2748
+    rect a1 [at: [0,1], label: "2", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a2 [at: [0,2], label: "7", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a3 [at: [0,3], label: "4", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a4 [at: [0,4], label: "8", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+
+    // + 1394
+    rect plus [at: [1,0], label: "+", fill: none, stroke: none, font_size: 34, label_fill: foreground-2]
+    rect b1 [at: [1,1], label: "1", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b2 [at: [1,2], label: "3", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b3 [at: [1,3], label: "9", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b4 [at: [1,4], label: "4", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+
+    // 4142
+    rect s1 [at: [2,1], label: "4", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s2 [at: [2,2], label: "1", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s3 [at: [2,3], label: "4", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s4 [at: [2,4], label: "2", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+}
+
+// onthoudcijfers: klein, boven de kolom waar ze bij opgeteld worden
+text "1" onthoud_t [font_size: 22, fill: secondary-dark]
+constrain onthoud_t.center_x = som.cell(0,3).center_x
+constrain onthoud_t.bottom = som.cell(0,3).top - 8
+
+text "1" onthoud_h [font_size: 22, fill: secondary-dark]
+constrain onthoud_h.center_x = som.cell(0,2).center_x
+constrain onthoud_h.bottom = som.cell(0,2).top - 8
+
+text "1" onthoud_d [font_size: 22, fill: secondary-dark]
+constrain onthoud_d.center_x = som.cell(0,1).center_x
+constrain onthoud_d.bottom = som.cell(0,1).top - 8
+
+// de streep ligt in de tussenruimte boven de somrij
+rect streep [height: 3, fill: foreground-1, stroke: none]
+constrain streep.left = som.cell(1,0).left
+constrain streep.right = som.cell(1,4).right
+constrain streep.top = som.cell(1,4).bottom + 4
+
+constrain kol4 contains a4, b4 [padding: 2]
+constrain kol3 contains a3, b3 [padding: 2]
+constrain kol2 contains a2, b2 [padding: 2]
+constrain kol1 contains a1, b1 [padding: 2]
+constrain hlsom contains s1, s2, s3, s4 [padding: 2]
+
+keyframe "opgave" {
+    hide kol1, kol2, kol3, kol4, hlsom
+    hide onthoud_t, onthoud_h, onthoud_d
+    hide s1, s2, s3, s4
+}
+
+keyframe "eenheden"  { show kol4 }
+keyframe "e_schrijf" { show s4, onthoud_t }
+
+keyframe "tientallen" { hide kol4
+                        show kol3 }
+keyframe "t_schrijf"  { hide onthoud_t
+                        show s3, onthoud_h }
+
+keyframe "honderdtallen" { hide kol3
+                           show kol2 }
+keyframe "h_schrijf"     { hide onthoud_h
+                           show s2, onthoud_d }
+
+keyframe "duizendtallen" { hide kol2
+                           show kol1 }
+keyframe "d_schrijf"     { hide onthoud_d
+                           show s1 }
+
+keyframe "resultaat" { hide kol1
+                       show hlsom }

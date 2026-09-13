@@ -262,13 +262,14 @@ section:not(.lead):not(.section):not(.fullscreen-light):not(.fullscreen-dark) > 
   top: auto;
   left: auto;
   transform: none;
-  color: var(--kpv-dark-grey);
+  color: white;
   font-family: var(--deck-display);
   font-size: 1.8em;
   font-weight: normal;
   margin: 0;
   padding: 20px 80px;
-  background-color: var(--kpv-very-light-grey);
+  border-radius: 6px;
+  background-color: var(--kpv-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1160,13 +1161,13 @@ section:not(.lead):not(.section):not(.fullscreen-light):not(.fullscreen-dark) > 
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 0.72em;
-  line-height: 1.35;
+  font-size: 0.62em;
+  line-height: 1.3;
 }
 
 .reveal .slides section .cols ul li {
   position: relative;
-  margin: 0 0 0.75em 0;
+  margin: 0 0 0.5em 0;
   padding-left: 1.1em;
   color: var(--kpv-dark-grey);
 }
@@ -1215,7 +1216,7 @@ section:not(.lead):not(.section):not(.fullscreen-light):not(.fullscreen-dark) > 
   border-radius: 6px;
   background: var(--kpv-very-light-grey);
   color: var(--kpv-medium-grey);
-  font-size: 0.5em;
+  font-size: 0.46em;
   line-height: 1.2;
   display: flex;
   align-items: center;

@@ -1,37 +1,45 @@
 /* INTENT
    Leer een leerling (10-12 jaar) de cijferende vermenigvuldiging
-   384 × 269, stap voor stap. Na afloop moet de kijker weten waarom
-   elke volgende rij één plaats naar links opschuift.
+   384 × 269, stap voor stap. De eerste rij (9 × 384) wordt cijfer per
+   cijfer uitgewerkt, mét de onthoudcijfers, zodat duidelijk is waar die
+   vandaan komen. De twee volgende rijen tonen alleen hun resultaat en
+   het opschuiven.
 */
 
 /* LAYOUT PLAN
    Eén grid als uitlijnraster: kolom 6 zijn de eenheden, kolom 1 de
-   honderdduizendtallen. Elke deelproduct staat op zijn eigen rij, op de
+   honderdduizendtallen. Elk deelproduct staat op zijn eigen rij, op de
    plaats die bij zijn cijfer hoort. De gap tussen de rijen draagt de
-   twee horizontale strepen. De uitleg per stap staat naast de slide,
-   niet in het diagram.
+   twee horizontale strepen. De onthoudcijfers staan als kleine tekst
+   boven de kolom waar ze bij opgeteld worden. De uitleg per stap staat
+   naast de slide, niet in het diagram.
 */
 
 /* STORYBOARD
-   0 "opgave"        : 384 × 269 met de bovenste streep
-   1 "eenheden"      : markeer de 9
-   2 "deelproduct1"  : 9 × 384 = 3456
-   3 "tientallen"    : markeer de 6
-   4 "deelproduct2"  : 6 × 384 = 2304, één plaats opgeschoven
-   5 "honderdtallen" : markeer de 2
-   6 "deelproduct3"  : 2 × 384 = 768, twee plaatsen opgeschoven
-   7 "optellen"      : streep en plusteken
-   8 "som"           : 103296
-   9 "resultaat"     : antwoord omkaderd
+   0  "opgave"        : 384 × 269 met de bovenste streep
+   1  "eenheden"      : markeer de 9
+   2  "e_vier"        : 9 × 4 = 36 -> schrijf 6, onthoud 3
+   3  "e_acht"        : 9 × 8 = 72 + 3 = 75 -> schrijf 5, onthoud 7
+   4  "e_drie"        : 9 × 3 = 27 + 7 = 34 -> schrijf 34
+   5  "tientallen"    : markeer de 6
+   6  "deelproduct2"  : 6 × 384 = 2304, één plaats opgeschoven
+   7  "honderdtallen" : markeer de 2
+   8  "deelproduct3"  : 2 × 384 = 768, twee plaatsen opgeschoven
+   9  "optellen"      : streep en plusteken
+   10 "som"           : 103296
+   11 "resultaat"     : antwoord omkaderd
 
-   STORY ARC: van de opgave naar het antwoord, waarbij elke rij laat
-   zien welk cijfer hem maakte en hoeveel plaatsen hij opschuift.
+   STORY ARC: eerst traag en volledig (waar komt een onthoudcijfer
+   vandaan?), daarna sneller, want het patroon is dan bekend.
 */
 
 // markeringen eerst declareren: dan belanden ze achter de cijfers
 rect hl9 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
 rect hl6 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
 rect hl2 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+rect hla3 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect hla2 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect hla1 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
 rect hlsom [fill: accent-light, stroke: accent-dark, stroke_width: 2]
 
 grid som [cols: 7, rows: 6, gap: 12, cell_width: 38, cell_height: 44] {
@@ -73,6 +81,15 @@ grid som [cols: 7, rows: 6, gap: 12, cell_width: 38, cell_height: 44] {
     rect s6 [at: [5,6], label: "6", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
 }
 
+// onthoudcijfers: klein, boven de kolom waar ze bij opgeteld worden
+text "3" onthoud3 [font_size: 22, fill: secondary-dark]
+constrain onthoud3.center_x = som.cell(0,5).center_x
+constrain onthoud3.bottom = som.cell(0,5).top - 8
+
+text "7" onthoud7 [font_size: 22, fill: secondary-dark]
+constrain onthoud7.center_x = som.cell(0,4).center_x
+constrain onthoud7.bottom = som.cell(0,4).top - 8
+
 // strepen liggen in de tussenruimte tussen twee rijen
 rect l1 [height: 3, fill: foreground-1, stroke: none]
 constrain l1.left = som.cell(1,1).left
@@ -87,19 +104,46 @@ constrain l2.top = som.cell(4,3).bottom + 4
 constrain hl9 contains b3 [padding: 2]
 constrain hl6 contains b2 [padding: 2]
 constrain hl2 contains b1 [padding: 2]
+constrain hla3 contains a3 [padding: 2]
+constrain hla2 contains a2 [padding: 2]
+constrain hla1 contains a1 [padding: 2]
 constrain hlsom contains s1, s2, s3, s4, s5, s6 [padding: 2]
 
 keyframe "opgave" {
-    hide hl9, hl6, hl2, hlsom
+    hide hl9, hl6, hl2, hla1, hla2, hla3, hlsom
+    hide onthoud3, onthoud7
     hide p1_1, p1_2, p1_3, p1_4
     hide p2_1, p2_2, p2_3, p2_4
     hide plus, p3_1, p3_2, p3_3
     hide l2, s1, s2, s3, s4, s5, s6
 }
-keyframe "eenheden"      { show hl9 }
-keyframe "deelproduct1"  { show p1_1, p1_2, p1_3, p1_4 }
-keyframe "tientallen"    { hide hl9
-                           show hl6 }
+
+keyframe "eenheden" { show hl9 }
+
+// 9 × 4 = 36: de 6 blijft staan, de 3 gaat mee naar de volgende kolom
+keyframe "e_vier" {
+    show hla3
+    show p1_4, onthoud3
+}
+
+// 9 × 8 = 72, plus de onthouden 3 = 75
+keyframe "e_acht" {
+    hide hla3, onthoud3
+    show hla2
+    show p1_3, onthoud7
+}
+
+// 9 × 3 = 27, plus de onthouden 7 = 34
+keyframe "e_drie" {
+    hide hla2, onthoud7
+    show hla1
+    show p1_1, p1_2
+}
+
+keyframe "tientallen" {
+    hide hl9, hla1
+    show hl6
+}
 keyframe "deelproduct2"  { show p2_1, p2_2, p2_3, p2_4 }
 keyframe "honderdtallen" { hide hl6
                            show hl2 }

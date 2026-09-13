@@ -1,0 +1,122 @@
+/* INTENT
+   Cijferend aftrekken met lenen: 8462 − 3759 = 4703. Bij elke keer lenen
+   wordt het buurcijfer doorgestreept, komt het nieuwe cijfer erboven, en
+   krijgt het cijfer waar je bij leent een kleine 1 ervoor.
+*/
+
+/* LAYOUT PLAN
+   Eén grid als uitlijnraster: kolom 4 zijn de eenheden, kolom 1 de
+   duizendtallen, kolom 0 draagt het minteken. Boven de bovenste rij is
+   plaats voor de geleende cijfers; de doorhaling is een dun rechthoekje
+   over het cijfer dat één minder wordt.
+*/
+
+/* STORYBOARD
+   0  "opgave"        : de twee getallen en de streep
+   1  "eenheden"      : markeer de eenhedenkolom — 2 − 9 kan niet
+   2  "lenen1"        : leen bij de 6: die wordt 5, de 2 wordt 12
+   3  "e_schrijf"     : 12 − 9 = 3
+   4  "tientallen"    : markeer de tientallen — nu 5 − 5
+   5  "t_schrijf"     : 5 − 5 = 0
+   6  "honderdtallen" : markeer de honderdtallen — 4 − 7 kan niet
+   7  "lenen2"        : leen bij de 8: die wordt 7, de 4 wordt 14
+   8  "h_schrijf"     : 14 − 7 = 7
+   9  "duizendtallen" : markeer de duizendtallen — 7 − 3
+   10 "d_schrijf"     : 7 − 3 = 4
+   11 "resultaat"     : antwoord omkaderd
+*/
+
+// markeringen eerst declareren: dan belanden ze achter de cijfers
+rect kol4 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect kol3 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect kol2 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect kol1 [fill: secondary-light, stroke: secondary-dark, stroke_width: 2]
+rect hlrest [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+
+grid som [cols: 5, rows: 3, gap: 12, cell_width: 38, cell_height: 44] {
+    // 8462
+    rect a1 [at: [0,1], label: "8", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a2 [at: [0,2], label: "4", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a3 [at: [0,3], label: "6", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a4 [at: [0,4], label: "2", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+
+    // − 3759
+    rect min [at: [1,0], label: "−", fill: none, stroke: none, font_size: 34, label_fill: foreground-2]
+    rect b1 [at: [1,1], label: "3", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b2 [at: [1,2], label: "7", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b3 [at: [1,3], label: "5", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b4 [at: [1,4], label: "9", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+
+    // 4703
+    rect s1 [at: [2,1], label: "4", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s2 [at: [2,2], label: "7", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s3 [at: [2,3], label: "0", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s4 [at: [2,4], label: "3", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+}
+
+// eerste keer lenen: de 6 wordt 5, de 2 wordt 12
+rect streep6 [height: 3, fill: secondary-dark, stroke: none]
+constrain streep6.left = som.cell(0,3).left + 6
+constrain streep6.right = som.cell(0,3).right - 6
+constrain streep6.center_y = som.cell(0,3).center_y
+
+text "5" nieuw5 [font_size: 22, fill: secondary-dark]
+constrain nieuw5.center_x = som.cell(0,3).center_x
+constrain nieuw5.bottom = som.cell(0,3).top - 8
+
+text "1" geleend1 [font_size: 22, fill: secondary-dark]
+constrain geleend1.center_x = som.cell(0,4).left + 8
+constrain geleend1.bottom = som.cell(0,4).top - 8
+
+// tweede keer lenen: de 8 wordt 7, de 4 wordt 14
+rect streep8 [height: 3, fill: secondary-dark, stroke: none]
+constrain streep8.left = som.cell(0,1).left + 6
+constrain streep8.right = som.cell(0,1).right - 6
+constrain streep8.center_y = som.cell(0,1).center_y
+
+text "7" nieuw7 [font_size: 22, fill: secondary-dark]
+constrain nieuw7.center_x = som.cell(0,1).center_x
+constrain nieuw7.bottom = som.cell(0,1).top - 8
+
+text "1" geleend2 [font_size: 22, fill: secondary-dark]
+constrain geleend2.center_x = som.cell(0,2).left + 8
+constrain geleend2.bottom = som.cell(0,2).top - 8
+
+// de streep ligt in de tussenruimte boven de restrij
+rect streep [height: 3, fill: foreground-1, stroke: none]
+constrain streep.left = som.cell(1,0).left
+constrain streep.right = som.cell(1,4).right
+constrain streep.top = som.cell(1,4).bottom + 4
+
+constrain kol4 contains a4, b4 [padding: 2]
+constrain kol3 contains a3, b3 [padding: 2]
+constrain kol2 contains a2, b2 [padding: 2]
+constrain kol1 contains a1, b1 [padding: 2]
+constrain hlrest contains s1, s2, s3, s4 [padding: 2]
+
+keyframe "opgave" {
+    hide kol1, kol2, kol3, kol4, hlrest
+    hide streep6, nieuw5, geleend1
+    hide streep8, nieuw7, geleend2
+    hide s1, s2, s3, s4
+}
+
+keyframe "eenheden" { show kol4 }
+keyframe "lenen1"   { show streep6, nieuw5, geleend1 }
+keyframe "e_schrijf" { show s4 }
+
+keyframe "tientallen" { hide kol4
+                        show kol3 }
+keyframe "t_schrijf"  { show s3 }
+
+keyframe "honderdtallen" { hide kol3
+                           show kol2 }
+keyframe "lenen2"        { show streep8, nieuw7, geleend2 }
+keyframe "h_schrijf"     { show s2 }
+
+keyframe "duizendtallen" { hide kol2
+                           show kol1 }
+keyframe "d_schrijf"     { show s1 }
+
+keyframe "resultaat" { hide kol1
+                       show hlrest }
