@@ -1,4 +1,9 @@
+# build-output
+_site/
+*/kiosk-output/
+*/node_modules/
 
-staartdeling/kiosk-output
-staartdeling/node_modules
-staartdeling/.kiosk-dev.pid
+# tijdelijke bestanden van build-kiosk.sh
+*/.kiosk-dev.pid
+*/.kiosk-processed*.md
+*/.video-manifest.json

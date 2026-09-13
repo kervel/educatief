@@ -1,5 +1,6 @@
 ---
-title: De staartdeling — 4096 : 128
+title: De staartdeling
+description: Vlaamse staartdeling stap voor stap, met 4096 : 128 als voorbeeld.
 autoslide: 0
 loop: false
 muted: true
