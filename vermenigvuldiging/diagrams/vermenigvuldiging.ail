@@ -1,0 +1,110 @@
+/* INTENT
+   Leer een leerling (10-12 jaar) de cijferende vermenigvuldiging
+   384 × 269, stap voor stap. Na afloop moet de kijker weten waarom
+   elke volgende rij één plaats naar links opschuift.
+*/
+
+/* LAYOUT PLAN
+   Eén grid als uitlijnraster: kolom 6 zijn de eenheden, kolom 1 de
+   honderdduizendtallen. Elke deelproduct staat op zijn eigen rij, op de
+   plaats die bij zijn cijfer hoort. De gap tussen de rijen draagt de
+   twee horizontale strepen. De uitleg per stap staat naast de slide,
+   niet in het diagram.
+*/
+
+/* STORYBOARD
+   0 "opgave"        : 384 × 269 met de bovenste streep
+   1 "eenheden"      : markeer de 9
+   2 "deelproduct1"  : 9 × 384 = 3456
+   3 "tientallen"    : markeer de 6
+   4 "deelproduct2"  : 6 × 384 = 2304, één plaats opgeschoven
+   5 "honderdtallen" : markeer de 2
+   6 "deelproduct3"  : 2 × 384 = 768, twee plaatsen opgeschoven
+   7 "optellen"      : streep en plusteken
+   8 "som"           : 103296
+   9 "resultaat"     : antwoord omkaderd
+
+   STORY ARC: van de opgave naar het antwoord, waarbij elke rij laat
+   zien welk cijfer hem maakte en hoeveel plaatsen hij opschuift.
+*/
+
+// markeringen eerst declareren: dan belanden ze achter de cijfers
+rect hl9 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+rect hl6 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+rect hl2 [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+rect hlsom [fill: accent-light, stroke: accent-dark, stroke_width: 2]
+
+grid som [cols: 7, rows: 6, gap: 12, cell_width: 38, cell_height: 44] {
+    // 384
+    rect a1 [at: [0,4], label: "3", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a2 [at: [0,5], label: "8", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect a3 [at: [0,6], label: "4", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+
+    // × 269
+    rect maal [at: [1,3], label: "×", fill: none, stroke: none, font_size: 34, label_fill: foreground-2]
+    rect b1 [at: [1,4], label: "2", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b2 [at: [1,5], label: "6", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+    rect b3 [at: [1,6], label: "9", fill: none, stroke: none, font_size: 40, label_fill: foreground-1]
+
+    // 9 × 384 = 3456
+    rect p1_1 [at: [2,3], label: "3", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p1_2 [at: [2,4], label: "4", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p1_3 [at: [2,5], label: "5", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p1_4 [at: [2,6], label: "6", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+
+    // 6 × 384 = 2304, één plaats naar links
+    rect p2_1 [at: [3,2], label: "2", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p2_2 [at: [3,3], label: "3", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p2_3 [at: [3,4], label: "0", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p2_4 [at: [3,5], label: "4", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+
+    // 2 × 384 = 768, twee plaatsen naar links
+    rect plus [at: [4,0], label: "+", fill: none, stroke: none, font_size: 34, label_fill: foreground-2]
+    rect p3_1 [at: [4,1], label: "7", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p3_2 [at: [4,2], label: "6", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+    rect p3_3 [at: [4,3], label: "8", fill: none, stroke: none, font_size: 40, label_fill: secondary-dark]
+
+    // 103296
+    rect s1 [at: [5,1], label: "1", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s2 [at: [5,2], label: "0", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s3 [at: [5,3], label: "3", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s4 [at: [5,4], label: "2", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s5 [at: [5,5], label: "9", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+    rect s6 [at: [5,6], label: "6", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
+}
+
+// strepen liggen in de tussenruimte tussen twee rijen
+rect l1 [height: 3, fill: foreground-1, stroke: none]
+constrain l1.left = som.cell(1,1).left
+constrain l1.right = som.cell(1,6).right
+constrain l1.top = som.cell(1,6).bottom + 4
+
+rect l2 [height: 3, fill: foreground-1, stroke: none]
+constrain l2.left = som.cell(4,1).left
+constrain l2.right = som.cell(4,6).right
+constrain l2.top = som.cell(4,3).bottom + 4
+
+constrain hl9 contains b3 [padding: 2]
+constrain hl6 contains b2 [padding: 2]
+constrain hl2 contains b1 [padding: 2]
+constrain hlsom contains s1, s2, s3, s4, s5, s6 [padding: 2]
+
+keyframe "opgave" {
+    hide hl9, hl6, hl2, hlsom
+    hide p1_1, p1_2, p1_3, p1_4
+    hide p2_1, p2_2, p2_3, p2_4
+    hide plus, p3_1, p3_2, p3_3
+    hide l2, s1, s2, s3, s4, s5, s6
+}
+keyframe "eenheden"      { show hl9 }
+keyframe "deelproduct1"  { show p1_1, p1_2, p1_3, p1_4 }
+keyframe "tientallen"    { hide hl9
+                           show hl6 }
+keyframe "deelproduct2"  { show p2_1, p2_2, p2_3, p2_4 }
+keyframe "honderdtallen" { hide hl6
+                           show hl2 }
+keyframe "deelproduct3"  { show p3_1, p3_2, p3_3 }
+keyframe "optellen"      { hide hl2
+                           show plus, l2 }
+keyframe "som"           { show s1, s2, s3, s4, s5, s6 }
+keyframe "resultaat"     { show hlsom }
