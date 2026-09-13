@@ -26,6 +26,9 @@ jobs:
       # mermaid, agent-illustrator, fonts), dus nix moet er zijn.
       - uses: cachix/install-nix-action@v27
         with:
+          # shell.nix doet `import <nixpkgs>`, dus de zoekpad-entry moet er zijn.
+          # Unstable, want daar is de lokale ontwikkelomgeving ook op gebouwd.
+          nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             experimental-features = nix-command flakes
 
