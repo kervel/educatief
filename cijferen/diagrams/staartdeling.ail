@@ -105,7 +105,7 @@ constrain d4.center_y = d1.center_y
 
 // staart
 constrain bar.center_x = 275
-constrain bar.center_y = 167
+constrain bar.center_y = canvas.center_y
 
 // deler
 constrain v1.center_x = 310

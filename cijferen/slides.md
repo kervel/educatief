@@ -17,9 +17,9 @@ transition: fade
 
 # Wat is cijferen?
 
-- grote getallen passen niet in je hoofd
-- dus zetten we ze onder elkaar, cijfer onder cijfer <!-- .element: class="fragment" -->
-- en werken we kolom per kolom, altijd van rechts naar links <!-- .element: class="fragment" -->
+- Grote getallen passen niet in je hoofd.
+- Dus zetten we ze onder elkaar, cijfer onder cijfer. <!-- .element: class="fragment" -->
+- En dan werken we stap voor stap, met vaste regels. <!-- .element: class="fragment" -->
 
 > Elke bewerking heeft zijn eigen vaste stappen. Ken je die, dan werkt het voor élk getal.
 
@@ -36,7 +36,7 @@ transition: fade
 <div class="cols">
 <div>
 
-```ail w:460 h:340
+```ail w:300 h:255
 file: diagrams/optellen.ail
 ```
 
@@ -57,9 +57,9 @@ file: diagrams/optellen.ail
 
 <ol class="stepflow" data-step-per-fragment="1,3,2,3,2,3,2,3,4">
 <li data-step="1">Begin rechts, bij de eenheden</li>
-<li data-step="2">Kolom naar links</li>
-<li data-step="3">Tel op met het onthoudcijfer, schrijf het laatste cijfer</li>
-<li data-step="4">Geen kolommen meer? Klaar</li>
+<li data-step="2">Tel de kolom op, onthoudcijfer erbij</li>
+<li data-step="3">Schrijf het rechtse cijfer, de rest onthoud je</li>
+<li data-step="4">Kolom naar links, tot er geen meer is</li>
 </ol>
 
 ---
@@ -75,7 +75,7 @@ file: diagrams/optellen.ail
 <div class="cols">
 <div>
 
-```ail w:460 h:340
+```ail w:300 h:255
 file: diagrams/aftrekken.ail
 ```
 
@@ -96,11 +96,11 @@ file: diagrams/aftrekken.ail
 </ul>
 </div>
 
-<ol class="stepflow" data-step-per-fragment="1,2,3,4,3,4,2,3,4,3,0">
+<ol class="stepflow" data-step-per-fragment="1,2,3,4,3,4,2,3,4,3,4">
 <li data-step="1">Begin rechts, bij de eenheden</li>
 <li data-step="2">Kan het niet? Leen een tiental bij de buur</li>
 <li data-step="3">Trek af en schrijf het cijfer</li>
-<li data-step="4">Kolom naar links</li>
+<li data-step="4">Kolom naar links, tot er geen meer is</li>
 </ol>
 
 ---
@@ -116,13 +116,13 @@ file: diagrams/aftrekken.ail
 <div class="cols">
 <div>
 
-```ail w:520 h:360
+```ail w:380 h:390
 file: diagrams/vermenigvuldiging.ail
 ```
 
 </div>
 <ul class="steps">
-<li>Langste getal bovenaan, vermenigvuldiger eronder.</li>
+<li>Het grootste getal bovenaan, de vermenigvuldiger eronder.</li>
 <li class="fragment" data-fragment-index="0">Begin rechts: de 9.</li>
 <li class="fragment" data-fragment-index="1">9 × 4 = 36 → schrijf 6, onthoud 3.</li>
 <li class="fragment" data-fragment-index="2">9 × 8 = 72, plus 3 = 75 → schrijf 5, onthoud 7.</li>
@@ -137,8 +137,8 @@ file: diagrams/vermenigvuldiging.ail
 </ul>
 </div>
 
-<ol class="stepflow" data-step-per-fragment="1,2,2,2,1,3,1,3,4,4,0">
-<li data-step="1">Neem het volgende cijfer, rechts → links</li>
+<ol class="stepflow" data-step-per-fragment="1,2,2,2,1,3,1,3,4,4,4">
+<li data-step="1">Neem het volgende cijfer, van rechts naar links</li>
 <li data-step="2">Maal met het hele bovenste getal</li>
 <li data-step="3">Zet de rij een plaats verder naar links</li>
 <li data-step="4">Geen cijfers meer? Tel alles op</li>
@@ -148,10 +148,10 @@ file: diagrams/vermenigvuldiging.ail
 
 # Waarom dat opschuiven?
 
-- de 9 is 9, dus 9 × 384 = 3456
-- de 6 staat op de plaats van de tientallen: 60 × 384 = 23040 <!-- .element: class="fragment" -->
-- de 2 staat op de plaats van de honderdtallen: 200 × 384 = 76800 <!-- .element: class="fragment" -->
-- elke plaats naar links is een keer tien zoveel <!-- .element: class="fragment" -->
+- De 9 is 9, dus 9 × 384 = 3456.
+- De 6 staat op de plaats van de tientallen: 60 × 384 = 23040. <!-- .element: class="fragment" -->
+- De 2 staat op de plaats van de honderdtallen: 200 × 384 = 76800. <!-- .element: class="fragment" -->
+- Elke plaats naar links is tien keer zoveel. <!-- .element: class="fragment" -->
 
 > De lege plaatsen rechts zijn dus geen slordigheid: ze zeggen hoe groot de rij is.
 
@@ -168,7 +168,7 @@ file: diagrams/vermenigvuldiging.ail
 <div class="cols">
 <div>
 
-```ail w:520 h:360
+```ail w:485 h:370
 file: diagrams/staartdeling.ail
 ```
 
@@ -187,29 +187,29 @@ file: diagrams/staartdeling.ail
 </ul>
 </div>
 
-<ol class="stepflow" data-step-per-fragment="1,2,3,3,4,1,2,3,0">
+<ol class="stepflow" data-step-per-fragment="1,2,3,3,4,1,2,3,4">
 <li data-step="1">Hoeveel keer past de deler erin?</li>
-<li data-step="2">Vermenigvuldig</li>
+<li data-step="2">Maal en schrijf het eronder</li>
 <li data-step="3">Trek af</li>
-<li data-step="4">Haal het volgende cijfer af</li>
+<li data-step="4">Volgend cijfer naar beneden, tot er geen meer is</li>
 </ol>
 
 ---
 
 # Onthoud
 
-- **optellen** — kolom per kolom, wat je overhoudt onthoud je
-- **aftrekken** — kan het niet, leen dan een tiental bij de buur
-- **vermenigvuldigen** — één rij per cijfer, telkens een plaats verder naar links
-- **delen** — hoeveel keer? maal, trek af, haal het volgende cijfer af
+- **Optellen** — kolom per kolom; wat je overhoudt, onthoud je.
+- **Aftrekken** — kan het niet, leen dan een tiental bij de buur.
+- **Vermenigvuldigen** — één rij per cijfer, telkens een plaats verder naar links.
+- **Delen** — hoeveel keer? Maal, trek af, haal het volgende cijfer naar beneden.
 
-> Alle vier beginnen ze rechts en werken ze naar links. En alle vier werken ze even goed met grotere getallen.
+> Optellen, aftrekken en vermenigvuldigen beginnen rechts. Delen begint links, bij het grootste stuk. Alle vier werken ze even goed met grotere getallen.
 
 ---
 
 # Probeer nu zelf
 
 - 3846 + 2757
-- 6204 − 1875
+- 6284 − 1875
 - 275 × 143
 - 5184 : 144

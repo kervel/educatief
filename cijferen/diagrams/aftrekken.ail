@@ -1,14 +1,15 @@
 /* INTENT
    Cijferend aftrekken met lenen: 8462 − 3759 = 4703. Bij elke keer lenen
    wordt het buurcijfer doorgestreept, komt het nieuwe cijfer erboven, en
-   krijgt het cijfer waar je bij leent een kleine 1 ervoor.
+   krijgt het cijfer waar je bij leent zijn nieuwe waarde erboven: elk
+   cijfer dat verandert wordt dus op dezelfde manier behandeld.
 */
 
 /* LAYOUT PLAN
    Eén grid als uitlijnraster: kolom 4 zijn de eenheden, kolom 1 de
    duizendtallen, kolom 0 draagt het minteken. Boven de bovenste rij is
-   plaats voor de geleende cijfers; de doorhaling is een dun rechthoekje
-   over het cijfer dat één minder wordt.
+   plaats voor de nieuwe waarden; een doorhaling is een dun rechthoekje
+   over het cijfer dat verandert.
 */
 
 /* STORYBOARD
@@ -54,33 +55,47 @@ grid som [cols: 5, rows: 3, gap: 12, cell_width: 38, cell_height: 44] {
     rect s4 [at: [2,4], label: "3", fill: none, stroke: none, font_size: 40, label_fill: accent-dark]
 }
 
+// Let op: --lint meldt hier terecht zes overlappingen. Een doorhaling
+// hoort over het cijfer te liggen dat ze doorstreept, en de kolommarkering
+// hoort eromheen te vallen. Die zes zijn dus gewild, niet vergeten.
+
 // eerste keer lenen: de 6 wordt 5, de 2 wordt 12
 rect streep6 [height: 3, fill: secondary-dark, stroke: none]
 constrain streep6.left = som.cell(0,3).left + 6
 constrain streep6.right = som.cell(0,3).right - 6
-constrain streep6.center_y = som.cell(0,3).center_y
+constrain streep6.center_y = som.cell(0,3).center_y - 5
 
 text "5" nieuw5 [font_size: 22, fill: secondary-dark]
 constrain nieuw5.center_x = som.cell(0,3).center_x
 constrain nieuw5.bottom = som.cell(0,3).top - 8
 
-text "1" geleend1 [font_size: 22, fill: secondary-dark]
-constrain geleend1.center_x = som.cell(0,4).left + 8
-constrain geleend1.bottom = som.cell(0,4).top - 8
+rect streep2 [height: 3, fill: secondary-dark, stroke: none]
+constrain streep2.left = som.cell(0,4).left + 6
+constrain streep2.right = som.cell(0,4).right - 6
+constrain streep2.center_y = som.cell(0,4).center_y - 5
+
+text "12" nieuw12 [font_size: 22, fill: secondary-dark]
+constrain nieuw12.center_x = som.cell(0,4).center_x
+constrain nieuw12.bottom = som.cell(0,4).top - 8
 
 // tweede keer lenen: de 8 wordt 7, de 4 wordt 14
 rect streep8 [height: 3, fill: secondary-dark, stroke: none]
 constrain streep8.left = som.cell(0,1).left + 6
 constrain streep8.right = som.cell(0,1).right - 6
-constrain streep8.center_y = som.cell(0,1).center_y
+constrain streep8.center_y = som.cell(0,1).center_y - 5
 
 text "7" nieuw7 [font_size: 22, fill: secondary-dark]
 constrain nieuw7.center_x = som.cell(0,1).center_x
 constrain nieuw7.bottom = som.cell(0,1).top - 8
 
-text "1" geleend2 [font_size: 22, fill: secondary-dark]
-constrain geleend2.center_x = som.cell(0,2).left + 8
-constrain geleend2.bottom = som.cell(0,2).top - 8
+rect streep4 [height: 3, fill: secondary-dark, stroke: none]
+constrain streep4.left = som.cell(0,2).left + 6
+constrain streep4.right = som.cell(0,2).right - 6
+constrain streep4.center_y = som.cell(0,2).center_y - 5
+
+text "14" nieuw14 [font_size: 22, fill: secondary-dark]
+constrain nieuw14.center_x = som.cell(0,2).center_x
+constrain nieuw14.bottom = som.cell(0,2).top - 8
 
 // de streep ligt in de tussenruimte boven de restrij
 rect streep [height: 3, fill: foreground-1, stroke: none]
@@ -96,13 +111,13 @@ constrain hlrest contains s1, s2, s3, s4 [padding: 2]
 
 keyframe "opgave" {
     hide kol1, kol2, kol3, kol4, hlrest
-    hide streep6, nieuw5, geleend1
-    hide streep8, nieuw7, geleend2
+    hide streep6, nieuw5, streep2, nieuw12
+    hide streep8, nieuw7, streep4, nieuw14
     hide s1, s2, s3, s4
 }
 
 keyframe "eenheden" { show kol4 }
-keyframe "lenen1"   { show streep6, nieuw5, geleend1 }
+keyframe "lenen1"   { show streep6, nieuw5, streep2, nieuw12 }
 keyframe "e_schrijf" { show s4 }
 
 keyframe "tientallen" { hide kol4
@@ -111,7 +126,7 @@ keyframe "t_schrijf"  { show s3 }
 
 keyframe "honderdtallen" { hide kol3
                            show kol2 }
-keyframe "lenen2"        { show streep8, nieuw7, geleend2 }
+keyframe "lenen2"        { show streep8, nieuw7, streep4, nieuw14 }
 keyframe "h_schrijf"     { show s2 }
 
 keyframe "duizendtallen" { hide kol2

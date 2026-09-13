@@ -88,18 +88,15 @@ keyframe "e_schrijf" { show s4, onthoud_t }
 
 keyframe "tientallen" { hide kol4
                         show kol3 }
-keyframe "t_schrijf"  { hide onthoud_t
-                        show s3, onthoud_h }
+keyframe "t_schrijf"  { show s3, onthoud_h }
 
 keyframe "honderdtallen" { hide kol3
                            show kol2 }
-keyframe "h_schrijf"     { hide onthoud_h
-                           show s2, onthoud_d }
+keyframe "h_schrijf"     { show s2, onthoud_d }
 
 keyframe "duizendtallen" { hide kol2
                            show kol1 }
-keyframe "d_schrijf"     { hide onthoud_d
-                           show s1 }
+keyframe "d_schrijf"     { show s1 }
 
 keyframe "resultaat" { hide kol1
                        show hlsom }
