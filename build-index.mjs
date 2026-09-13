@@ -6,6 +6,9 @@
  * van die slides.md (veld `title`, met `description` als optionele ondertitel);
  * ontbreekt die, dan valt hij terug op de mapnaam.
  *
+ * Onder de decks staat een lijstje met werk dat elders leeft: pas ELDERS
+ * hieronder aan om er een toe te voegen.
+ *
  * Gebruik: node build-index.mjs <output-dir> <deck-map> [<deck-map> ...]
  */
 import { readFileSync, writeFileSync } from 'fs';
@@ -30,6 +33,17 @@ function frontmatter(file) {
   return out;
 }
 
+// Oefenmateriaal dat niet in deze repository staat.
+const ELDERS = [
+  {
+    url: 'https://tafels.kervel.theworkpc.com/',
+    title: 'Tafels oefenen',
+    description: 'Losse oefensite voor de maaltafels.',
+    source: 'https://github.com/kervel/tafels',
+    sourceLabel: 'github.com/kervel/tafels',
+  },
+];
+
 const escape = (s) => String(s).replace(/[&<>"]/g,
   (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -47,6 +61,14 @@ const cards = decks.map((d) => `      <li>
           <span class="title">${escape(d.title)}</span>
           ${d.description ? `<span class="desc">${escape(d.description)}</span>` : ''}
         </a>
+      </li>`).join('\n');
+
+const elders = ELDERS.map((d) => `      <li>
+        <a href="${escape(d.url)}">
+          <span class="title">${escape(d.title)}</span>
+          ${d.description ? `<span class="desc">${escape(d.description)}</span>` : ''}
+        </a>
+        <p class="src">broncode: <a href="${escape(d.source)}">${escape(d.sourceLabel || d.source)}</a></p>
       </li>`).join('\n');
 
 const html = `<!doctype html>
@@ -96,6 +118,23 @@ const html = `<!doctype html>
   }
   .title { display: block; font-weight: 600; color: var(--accent); }
   .desc { display: block; margin-top: 2px; font-size: 0.9rem; color: var(--muted); }
+  h2 {
+    margin: 40px 0 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .src { margin: 6px 0 0 18px; font-size: 0.82rem; color: var(--muted); }
+  .src a {
+    display: inline;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .src a:hover, .src a:focus-visible { background: none; }
   footer { max-width: 640px; margin: 48px auto 0; color: var(--muted); font-size: 0.85rem; }
 </style>
 </head>
@@ -106,6 +145,7 @@ const html = `<!doctype html>
     <ul>
 ${cards}
     </ul>
+${elders ? `    <h2>Elders</h2>\n    <ul>\n${elders}\n    </ul>` : ''}
   </main>
   <footer>Automatisch gebouwd uit de repository.</footer>
 </body>
